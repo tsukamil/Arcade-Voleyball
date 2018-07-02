@@ -60,7 +60,7 @@ void setup() {
 arduboy.begin();
 arduboy.setFrameRate(45);
 arduboy.initRandomSeed();
-randomNumber = 1 + rand() % 5; // inne ustawienie do pilki
+randomNumber = 1 + rand() % 5; // random oponnent set to the ball
 
 // initialize things here
   // audio setup
@@ -179,7 +179,7 @@ if (ballY+8>64 or (playerTouches>3 and threeTouches) or (oponTouches>3 and three
 
    }
 
-//WZNOWIENIE - SERWIS
+//SERVE
 
    if (arduboy.pressed(A_BUTTON) == true and stop==true) {
       if (didPlayerScore==true) ballXvelocity = -1;
@@ -196,21 +196,21 @@ if (ballY+8>64 or (playerTouches>3 and threeTouches) or (oponTouches>3 and three
     arduboy.print("PRESS A");
    }
 
-//do ogarniecia!! grawitacja prostsza niz sie wydawalo :D
+//EASY GRAVITY :D
 
 if (ballYvelocity < 3) ballYvelocity+=ballGravity;
 
-//kolizje
+//COLLISIONS
 
 if (ballY+8>41 and ballX>=62 and ballX<=63 and ballXvelocity<0) ballXvelocity=2;
 if (ballY+8>41 and ballX+8<=60 and ballX+8>=59 and ballXvelocity>0) ballXvelocity=-2;
 if (ballY+8>=41 and ballX+4>57 and ballX+4<65) ballYvelocity=-0.5;
 
-//"uwalnianie pilki" do ponowengo naliczenia odbicia
+//"free ball" to another count of touches
 if (ballY+8<playerY) freePlayerTouch=true;
 if (ballY+8<oponY) freeOponTouch=true;
 
-//srodek dol piki - odbija sie wgore
+//middle of the player - bounce up
 if (ballY+8>=playerY and ballY+8<playerY+8 and ballX+4>playerX+4 and ballX+4<playerX+12) {
   ballYvelocity=-2 + 0.05*randomNumber;
   randomNumber = 1 + rand() % 5;
@@ -223,7 +223,7 @@ if (ballY+8>=playerY and ballY+8<playerY+8 and ballX+4>playerX+4 and ballX+4<pla
 }
 
 
-//odbicie z prawej strony gracza
+//right side of the player
 if (ballY+8>=playerY and ballY+8<playerY+8 and ballX+4>=playerX+12 and ballX+4<=playerX+16) {
   ballYvelocity=-2 + 0.05*randomNumber;
   ballXvelocity=2;
@@ -235,7 +235,7 @@ if (ballY+8>=playerY and ballY+8<playerY+8 and ballX+4>=playerX+12 and ballX+4<=
   }
 }
 
-//odbicie z lewej strony gracza
+//left side of the player
 if (ballY+8>=playerY and ballY+8<playerY+8 and ballX+4>playerX and ballX+4<=playerX+4) {
   ballYvelocity=-2 + 0.05*randomNumber;
   ballXvelocity=-2;
@@ -249,7 +249,7 @@ if (ballY+8>=playerY and ballY+8<playerY+8 and ballX+4>playerX and ballX+4<=play
 }
 
 
-//srodek dol piki - odbija sie w gore od przeciwnika
+//middle of the opponent- bounce up
 if (ballY+8>=oponY and ballY+8<oponY+8 and ballX+4>oponX+4 and ballX+4<oponX+12) 
 {
   ballYvelocity=-2 + 0.05*randomNumber;
@@ -261,7 +261,7 @@ if (ballY+8>=oponY and ballY+8<oponY+8 and ballX+4>oponX+4 and ballX+4<oponX+12)
   }
 }
 
-//odbicie z prawej strony przeciwnika
+//right side of the oponnent
 if (ballY+8>=oponY and ballY+8<oponY+8 and ballX+4>=oponX+12 and ballX+4<=oponX+16) {
   ballYvelocity=-2 + 0.05*randomNumber;
   ballXvelocity=2;
@@ -273,7 +273,7 @@ if (ballY+8>=oponY and ballY+8<oponY+8 and ballX+4>=oponX+12 and ballX+4<=oponX+
   } 
 }
 
-//odbicie z lewej strony przeciwnika
+//left side of the oponnent
 if (ballY+8>=oponY and ballY+8<oponY+8 and ballX+4>oponX and ballX+4<=oponX+4) {
   ballYvelocity=-2 + 0.05*randomNumber;
   ballXvelocity=-2;
@@ -285,7 +285,7 @@ if (ballY+8>=oponY and ballY+8<oponY+8 and ballX+4>oponX and ballX+4<=oponX+4) {
   }
 }
 
-// !!!PRZECIWNIK!!!
+// !!!OPPONENT!!!
 
 /*if (ballX>60) {
    if (ballX+4<oponX and oponX>64+randomNumber) oponX-=oponSpeed;  //dodanie randomize minimalnie
@@ -313,7 +313,7 @@ if (ballX==oponX-7 and oponJump == false and ballXvelocity>0) {
 
 
 
-// !!! STEROWANIE !!!
+// !!! CONTROLS !!!
 if( arduboy.pressed(B_BUTTON) == true and playerJump == false) {
  playerJump=true;
  playerYvelocity=2;
@@ -329,7 +329,7 @@ if( arduboy.pressed(RIGHT_BUTTON) == true and playerX + 16 < 60 ) {
  playerX+=1;
 }
 
-// GRAWITACJA GRACZA i PRZECIWNIKA SKOK
+// PLAYER GRAVITY AND JUMP
 if (playerJump) {
  if (playerYvelocity>0) {
    playerYvelocity-=gravity;
@@ -341,7 +341,7 @@ if (playerJump) {
    playerJump=false;
  }
 }
-
+// OPPONENT GRAVITY AND JUMP
 if (oponJump) {
  if (oponYvelocity>0) {
    oponYvelocity-=oponGravity;
@@ -354,7 +354,7 @@ if (oponJump) {
  }
 }
 
-//koniec gry
+//end of the game condition
 if (playerScore==pointsToWin) {
   playerWin=true;
   startGame=false;
@@ -365,7 +365,7 @@ if (oponScore==pointsToWin) {
 }
 
 
-arduboy.drawRect(60,40,2,24,WHITE); //SIATKA!
+arduboy.drawRect(60,40,2,24,WHITE); //NET!
 arduboy.drawBitmap(playerX, playerY, player, 16, 16, WHITE);
 arduboy.drawBitmap(oponX, oponY, opon, 16, 16, WHITE);
 arduboy.drawBitmap(ballX, ballY, ball, 8, 8, WHITE);
